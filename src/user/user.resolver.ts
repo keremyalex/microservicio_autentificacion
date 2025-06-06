@@ -1,5 +1,5 @@
 // src/user/user.resolver.ts
-import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Context, ResolveReference } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './entity/user.entity';
@@ -49,5 +49,10 @@ export class UserResolver {
   @Roles(Role.ADMIN)
   async removeUser(@Args('id') id: string): Promise<boolean> {
     return this.userService.remove(id);
+  }
+
+  @ResolveReference()
+  resolveReference(reference: { __typename: string; id: string }) {
+    return this.userService.findOne(reference.id);
   }
 }

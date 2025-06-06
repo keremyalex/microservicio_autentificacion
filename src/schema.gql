@@ -4,9 +4,17 @@
 
 type User {
   _id: ID!
+  id: ID!
   email: String!
   password: String!
-  role: String!
+  role: Role!
+}
+
+"""Roles disponibles en el sistema"""
+enum Role {
+  ADMIN
+  VENDEDOR
+  ALMACENISTA
 }
 
 type Query {
@@ -20,18 +28,18 @@ type Mutation {
   register(email: String!, password: String!): String!
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
-  deleteUser(id: String!): Boolean!
+  removeUser(id: String!): Boolean!
 }
 
 input CreateUserInput {
   email: String!
   password: String!
-  role: String!
+  role: Role = VENDEDOR
 }
 
 input UpdateUserInput {
   email: String
   password: String
-  role: String
+  role: Role = VENDEDOR
   id: ID!
 }

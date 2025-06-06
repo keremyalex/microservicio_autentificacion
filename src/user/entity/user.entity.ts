@@ -1,10 +1,11 @@
-import { Field, ObjectType, ID } from '@nestjs/graphql';
+import { Field, ObjectType, ID, Directive } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { Role } from '../../auth/enums/role.enum';
 
 @ObjectType()
 @Schema()
+@Directive('@key(fields: "_id")')
 export class User {
   @Field(() => ID)
   _id: string;

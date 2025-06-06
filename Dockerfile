@@ -3,30 +3,35 @@ FROM node:20.11.1-alpine as builder
 
 WORKDIR /app
 
+# Copiar archivos de dependencias
 COPY package*.json ./
 
-RUN npm install
+# Instalar todas las dependencias
+RUN npm install --legacy-peer-deps
 
 COPY . .
 
 RUN npm run build
 
 # Etapa de producción
-FROM node:20.11.1-alpine
+FROM node:20.11.1-alpine as stage-1
+
+# Instalar netcat y otras utilidades necesarias
+RUN apk add --no-cache netcat-openbsd
 
 WORKDIR /app
 
-# Instalar netcat
-RUN apk add --no-cache netcat-openbsd
-
+# Copiar package.json y package-lock.json
 COPY package*.json ./
 
-RUN npm install --only=production
+# Copiar node_modules y dist desde la etapa de construcción
+RUN npm install --legacy-peer-deps --production
 
+COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/src/database/seeds ./src/database/seeds
 
-EXPOSE 3001
+EXPOSE 3000
 
 # Script para ejecutar seeders y luego la aplicación
 COPY docker-entrypoint.sh /
