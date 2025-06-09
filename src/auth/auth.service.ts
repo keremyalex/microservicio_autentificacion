@@ -13,18 +13,30 @@ export class AuthService {
   ) {}
 
   async login(email: string, password: string): Promise<string> {
+    console.log('Intentando login con email:', email);
     const user = await this.userService.findByEmail(email);
-    if (!user || !(await bcrypt.compare(password, user.password))) {
+    console.log('Usuario encontrado:', user ? 'Sí' : 'No');
+    
+    if (!user) {
+      console.log('Usuario no encontrado');
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    return this.jwtService.sign({ sub: user._id, email: user.email, role: user.role });
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    console.log('Contraseña coincide:', passwordMatch ? 'Sí' : 'No');
+
+    if (!passwordMatch) {
+      console.log('Contraseña no coincide');
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const token = this.jwtService.sign({ sub: user._id, email: user.email, role: user.role });
+    console.log('Token generado exitosamente');
+    return token;
   }
 
   async register(email: string, password: string): Promise<string> {
-    const hashed = await bcrypt.hash(password, 10);
-    const user = await this.userService.create({ email, password: hashed, role: Role.VENDEDOR });
-
+    const user = await this.userService.create({ email, password, role: Role.VENDEDOR });
     return this.jwtService.sign({ sub: user._id, email: user.email, role: user.role });
   }
 }
