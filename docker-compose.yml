@@ -24,7 +24,6 @@ services:
       - "27017:27017"
     volumes:
       - mongodb_data:/data/db
-      - mongodb_backup:/backup
     environment:
       - MONGO_INITDB_DATABASE=ferreteria
       # Configuración de autenticación (recomendado para producción)
@@ -41,19 +40,6 @@ services:
       retries: 5
       start_period: 60s
 
-  # Servicio de backup automático (opcional)
-  backup:
-    image: mongo:7.0.5
-    volumes:
-      - mongodb_backup:/backup
-      - ./backup-script.sh:/backup-script.sh
-    entrypoint: ["/bin/sh", "/backup-script.sh"]
-    depends_on:
-      - mongodb
-    restart: unless-stopped
-    networks:
-      - ferreteria-network
-
 networks:
   ferreteria-network:
     driver: bridge
@@ -64,10 +50,4 @@ volumes:
     driver_opts:
       type: none
       device: /var/lib/ferreteria/mongodb_data
-      o: bind
-  mongodb_backup:
-    driver: local
-    driver_opts:
-      type: none
-      device: /var/lib/ferreteria/backups
       o: bind 
