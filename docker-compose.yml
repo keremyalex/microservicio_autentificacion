@@ -24,21 +24,15 @@ services:
       - "27017:27017"
     volumes:
       - mongodb_data:/data/db
-    environment:
-      - MONGO_INITDB_DATABASE=ferreteria
-      # Configuración de autenticación (recomendado para producción)
-      # - MONGO_INITDB_ROOT_USERNAME=admin
-      # - MONGO_INITDB_ROOT_PASSWORD=your_secure_password
-    command: mongod --auth --bind_ip_all
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
     restart: unless-stopped
     networks:
       - ferreteria-network
-    healthcheck:
-      test: mongosh --eval 'db.runCommand("ping").ok' --quiet
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 60s
 
 networks:
   ferreteria-network:
@@ -46,8 +40,4 @@ networks:
 
 volumes:
   mongodb_data:
-    driver: local
-    driver_opts:
-      type: none
-      device: /var/lib/ferreteria/mongodb_data
-      o: bind 
+    driver: local 
