@@ -30,7 +30,6 @@ RUN npm install --legacy-peer-deps --production
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/src/database/seeds ./src/database/seeds
-COPY .env ./
 
 EXPOSE ${PORT}
 
