@@ -61,10 +61,10 @@ NODE_ENV=development
 MONGODB_URI=mongodb://mongodb:27017/ferreteria
 
 # Construir y levantar los contenedores (incluyendo MongoDB)
-docker-compose --profile development up --build
+docker-compose --profile dev up --build
 
 # Para ejecutar en segundo plano
-docker-compose --profile development up -d
+docker-compose --profile dev up -d
 ```
 
 #### Producción (MongoDB Remoto)
@@ -84,10 +84,10 @@ docker-compose up -d
 
 El proyecto utiliza perfiles de Docker Compose para manejar diferentes entornos:
 
-- **Perfil `development`**: Incluye el servicio de MongoDB local
-  - Se activa con `--profile development`
+- **Perfil `dev`**: Incluye el servicio de MongoDB local
+  - Se activa con `--profile dev`
   - Útil para desarrollo y pruebas locales
-  - Ejemplo: `docker-compose --profile development up`
+  - Ejemplo: `docker-compose --profile dev up`
 
 - **Sin perfil (default)**: Solo ejecuta el servicio de la API
   - Se activa con `docker-compose up` (sin --profile)
@@ -106,12 +106,12 @@ npm run start:prod
 
 ## Comportamiento por Entorno
 
-### Desarrollo (Usando `--profile development`)
+### Desarrollo (Usando `--profile dev`)
 - ✅ Se inicia MongoDB local en un contenedor Docker
 - ✅ La API se conecta a MongoDB local
 - ✅ Los datos persisten en un volumen Docker
 - ✅ Ideal para desarrollo y pruebas
-- ✅ Comando: `docker-compose --profile development up`
+- ✅ Comando: `docker-compose --profile dev up`
 
 ### Producción (Sin perfil)
 - ✅ No se inicia MongoDB local

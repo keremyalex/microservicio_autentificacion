@@ -9,15 +9,9 @@ services:
       - "${API_PORT:-3001}:${PORT:-3000}"
     env_file:
       - .env
-    depends_on:
-      mongodb:
-        condition: service_healthy
-        required: false
     restart: unless-stopped
     networks:
       - ferreteria-network
-    profiles:
-      - all
 
   mongodb:
     image: mongo:7.0.5
@@ -37,7 +31,7 @@ services:
     networks:
       - ferreteria-network
     profiles:
-      - development
+      - dev
 
 networks:
   ferreteria-network:
