@@ -12,10 +12,12 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
-        required: true
+        required: false
     restart: unless-stopped
     networks:
       - ferreteria-network
+    profiles:
+      - all
 
   mongodb:
     image: mongo:7.0.5
