@@ -60,22 +60,39 @@ MONGODB_PORT=27017 # Puerto de MongoDB
 NODE_ENV=development
 MONGODB_URI=mongodb://mongodb:27017/ferreteria
 
-# Construir y levantar los contenedores
-docker-compose up --build
+# Construir y levantar los contenedores (incluyendo MongoDB)
+docker-compose --profile development up --build
 
 # Para ejecutar en segundo plano
-docker-compose up -d
+docker-compose --profile development up -d
 ```
 
 #### Producción (MongoDB Remoto)
 ```bash
 # Configurar .env para producción
 NODE_ENV=production
-MONGODB_URI=mongodb+srv://tu_usuario:tu_password@tu_cluster.railway.app/ferreteria
+MONGODB_URI=mongodb://tu_usuario:tu_password@tu_host:27017
 
 # Construir y levantar solo el contenedor de la API
 docker-compose up --build
+
+# Para ejecutar en segundo plano
+docker-compose up -d
 ```
+
+### Perfiles de Docker Compose
+
+El proyecto utiliza perfiles de Docker Compose para manejar diferentes entornos:
+
+- **Perfil `development`**: Incluye el servicio de MongoDB local
+  - Se activa con `--profile development`
+  - Útil para desarrollo y pruebas locales
+  - Ejemplo: `docker-compose --profile development up`
+
+- **Sin perfil (default)**: Solo ejecuta el servicio de la API
+  - Se activa con `docker-compose up` (sin --profile)
+  - Ideal para producción con MongoDB remoto
+  - Ejemplo: `docker-compose up`
 
 ### Sin Docker
 
@@ -89,17 +106,19 @@ npm run start:prod
 
 ## Comportamiento por Entorno
 
-### Desarrollo (`NODE_ENV=development`)
+### Desarrollo (Usando `--profile development`)
 - ✅ Se inicia MongoDB local en un contenedor Docker
 - ✅ La API se conecta a MongoDB local
 - ✅ Los datos persisten en un volumen Docker
 - ✅ Ideal para desarrollo y pruebas
+- ✅ Comando: `docker-compose --profile development up`
 
-### Producción (`NODE_ENV=production`)
+### Producción (Sin perfil)
 - ✅ No se inicia MongoDB local
 - ✅ La API se conecta a tu MongoDB remoto (ej: Railway)
 - ✅ Solo se ejecuta el contenedor de la API
 - ✅ Ideal para despliegue en producción
+- ✅ Comando: `docker-compose up`
 
 ## Usuarios por Defecto
 

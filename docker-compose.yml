@@ -12,7 +12,7 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
-        required: ${NODE_ENV:-development} == 'development'
+        required: true
     restart: unless-stopped
     networks:
       - ferreteria-network
