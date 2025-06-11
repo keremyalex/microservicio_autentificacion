@@ -6,14 +6,13 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "3001:3000"
-    environment:
-      - NODE_ENV=production
-      - MONGODB_URI=mongodb://mongodb:27017/ferreteria
-      - JWT_SECRET=your_jwt_secret
+      - "${API_PORT:-3001}:${PORT:-3000}"
+    env_file:
+      - .env
     depends_on:
       mongodb:
         condition: service_healthy
+        required: ${NODE_ENV:-development} == 'development'
     restart: unless-stopped
     networks:
       - ferreteria-network
@@ -21,9 +20,11 @@ services:
   mongodb:
     image: mongo:7.0.5
     ports:
-      - "27017:27017"
+      - "${MONGODB_PORT:-27017}:27017"
     volumes:
       - mongodb_data:/data/db
+    env_file:
+      - .env
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
       interval: 10s
@@ -33,6 +34,8 @@ services:
     restart: unless-stopped
     networks:
       - ferreteria-network
+    profiles:
+      - development
 
 networks:
   ferreteria-network:
