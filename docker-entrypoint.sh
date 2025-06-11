@@ -1,8 +1,7 @@
 #!/bin/sh
 
-# Verificar si estamos en desarrollo
+# Esperar a que MongoDB esté disponible si estamos en desarrollo
 if [ "$NODE_ENV" = "development" ]; then
-  # Esperar a que MongoDB esté disponible
   echo "Esperando a que MongoDB esté disponible..."
   while ! nc -z mongodb 27017; do
     sleep 1
@@ -10,11 +9,9 @@ if [ "$NODE_ENV" = "development" ]; then
   echo "MongoDB está disponible"
 fi
 
-# Ejecutar los seeders solo en desarrollo
-if [ "$NODE_ENV" = "development" ]; then
-  echo "Ejecutando seeders..."
-  cd /app && node dist/database/seeds/run-seed.js
-fi
+# Ejecutar los seeders en todos los entornos
+echo "Ejecutando seeders..."
+cd /app && node dist/database/seeds/run-seed.js
 
 # Iniciar la aplicación
 echo "Iniciando la aplicación..."
